@@ -32,10 +32,10 @@ async def destination(update: Update, context: ContextTypes.DEFAULT_TYPE):
         "Qual é a data de ida? (dd/mm/aaaa)"
     )
 
-    return TripState.DEPARTURE
+    return TripState.DEPARTURE_DATE
 
 
-async def departure(update, context):
+async def departure(update, context:ContextTypes.DEFAULT_TYPE,):
 
     text = update.message.text
 
@@ -45,18 +45,18 @@ async def departure(update, context):
             "❌ Data inválida.\n\nUse o formato:\n15/03/2027"
         )
 
-        return TripState.DEPARTURE
+        return TripState.DEPARTURE_DATE
 
-    context.user_data["departure"] = text
+    context.user_data["departure_date"] = text
 
     await update.message.reply_text(
         "Qual é a data de volta?"
     )
 
-    return TripState.RETURN
+    return TripState.RETURN_DATE
 
 
-async def return_trip(update, context):
+async def return_trip(update, context:ContextTypes.DEFAULT_TYPE,):
 
     text = update.message.text
 
@@ -66,7 +66,7 @@ async def return_trip(update, context):
             "❌ Data inválida."
         )
 
-        return TripState.RETURN
+        return TripState.RETURN_DATE
 
     context.user_data["return_date"] = text
 
@@ -77,7 +77,7 @@ async def return_trip(update, context):
     return TripState.ADULTS
 
 
-async def adults(update, context):
+async def adults(update, context:ContextTypes.DEFAULT_TYPE,):
 
     text = update.message.text
 
@@ -98,7 +98,7 @@ async def adults(update, context):
     return TripState.BUDGET
 
 
-async def budget(update, context):
+async def budget(update, context:ContextTypes.DEFAULT_TYPE,):
 
     text = update.message.text
 
@@ -122,8 +122,8 @@ async def budget(update, context):
 
 Origem: {data['origin']}
 Destino: {data['destination']}
-Ida: {data['departure']}
-Volta: {data['return']}
+Ida: {data['departure_date']}
+Volta: {data['return_date']}
 Adultos: {data['adults']}
 Orçamento: R$ {data['budget']:.2f}
 """
