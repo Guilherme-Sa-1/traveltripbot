@@ -1,7 +1,5 @@
 import os
-
 from dotenv import load_dotenv
-
 from telegram.ext import (
     Application,
     CommandHandler,
@@ -14,8 +12,9 @@ from app.bot.commands import (
     start,
     new_trip,
     cancel,
+    list_trips,
+    remove_trip,
 )
-
 from app.bot.handlers import (
     origin,
     destination,
@@ -24,17 +23,14 @@ from app.bot.handlers import (
     adults,
     budget,
 )
-
 from app.bot.states import TripState
 
 load_dotenv()
-
 TOKEN = os.getenv("TELEGRAM_TOKEN")
-
 
 def main():
     app = Application.builder().token(TOKEN).build()
-
+    
     conversation = ConversationHandler(
         entry_points=[
             CommandHandler("nova", new_trip),
@@ -63,14 +59,14 @@ def main():
             CommandHandler("cancel", cancel),
         ],
     )
-
+    
     app.add_handler(CommandHandler("start", start))
+    app.add_handler(CommandHandler("listar", list_trips))
+    app.add_handler(CommandHandler("remover", remove_trip))
     app.add_handler(conversation)
-
+    
     print("🤖 TripBot iniciado com sucesso!")
-
     app.run_polling()
-
 
 if __name__ == "__main__":
     main()
