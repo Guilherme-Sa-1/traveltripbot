@@ -49,7 +49,7 @@ async def list_trips(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(response, parse_mode="Markdown")
 
 async def remove_trip(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    # Verifica se o usuário digitou algum argumento (ex: /remover 1)
+
     if not context.args:
         await update.message.reply_text("Por favor, informe o ID da viagem.\nExemplo: /remover 1")
         return
@@ -65,5 +65,30 @@ async def remove_trip(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     if success:
         await update.message.reply_text(f"✅ Viagem {trip_id} removida com sucesso!")
+    else:
+        await update.message.reply_text(f"❌ Nenhuma viagem encontrada com o ID {trip_id}.")
+
+async def edit_trip(update: Update, context: ContextTypes.DEFAULT_TYPE):
+
+    if len(context.args) < 2:
+        await update.message.reply_text(
+            "⚠️ Uso correto: /editar <ID> <Novo Orçamento>\n"
+            "Exemplo: /editar 1 5500"
+        )
+        return
+
+    try:
+        trip_id = int(context.args[0])
+        
+        new_budget = float(context.args[1].replace(",", "."))
+    except ValueError:
+        await update.message.reply_text("❌ Erro: Certifique-se de que o ID e o orçamento sejam números.")
+        return
+
+    service = TripService()
+    success = service.update_trip_budget(trip_id, new_budget)
+
+    if success:
+        await update.message.reply_text(f"✅ Orçamento da viagem {trip_id} atualizado para R$ {new_budget:.2f}!")
     else:
         await update.message.reply_text(f"❌ Nenhuma viagem encontrada com o ID {trip_id}.")

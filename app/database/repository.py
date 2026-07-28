@@ -49,3 +49,15 @@ class TripRepository:
             return False
         finally:
             session.close()
+
+    def update_budget(self, trip_id: int, new_budget: float) -> bool:
+        session = SessionLocal()
+        try:
+            trip = session.get(Trip, trip_id)
+            if trip:
+                trip.budget = new_budget
+                session.commit()
+                return True
+            return False
+        finally:
+            session.close()

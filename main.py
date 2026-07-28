@@ -14,6 +14,7 @@ from app.bot.commands import (
     cancel,
     list_trips,
     remove_trip,
+    edit_trip,
 )
 from app.bot.handlers import (
     origin,
@@ -63,6 +64,7 @@ def main():
     app.add_handler(CommandHandler("start", start))
     app.add_handler(CommandHandler("listar", list_trips))
     app.add_handler(CommandHandler("remover", remove_trip))
+    app.add_handler(CommandHandler("editar", edit_trip))
     app.add_handler(conversation)
     
     print("🤖 TripBot iniciado com sucesso!")

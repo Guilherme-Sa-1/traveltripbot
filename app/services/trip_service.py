@@ -24,3 +24,7 @@ class TripService:
     def remove_trip(self, trip_id: int) -> bool:
 
         return self.repository.delete_trip(trip_id)
+
+    def update_trip_budget(self, trip_id: int, new_budget: float) -> bool:
+        
+        return self.repository.update_budget(trip_id, new_budget)
