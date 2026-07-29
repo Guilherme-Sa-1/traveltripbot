@@ -92,3 +92,48 @@ async def edit_trip(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text(f"✅ Orçamento da viagem {trip_id} atualizado para R$ {new_budget:.2f}!")
     else:
         await update.message.reply_text(f"❌ Nenhuma viagem encontrada com o ID {trip_id}.")
+
+
+async def search_trip(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    if not context.args:
+        await update.message.reply_text("⚠️ Informe o ID da viagem.\nExemplo: /buscar 1")
+        return
+
+    try:
+        trip_id = int(context.args[0])
+    except ValueError:
+        await update.message.reply_text("❌ O ID deve ser um número inteiro.")
+        return
+
+    aguarde_msg = await update.message.reply_text("🔍 Buscando voos no Google Flights... Isso pode levar alguns segundos.")
+
+    service = TripService()
+    resultado = service.search_flights_for_trip(trip_id)
+
+    await aguarde_msg.delete()
+
+    if not resultado["success"]:
+        await update.message.reply_text(f"❌ Ops: {resultado['error']}")
+        return
+
+    trip = resultado["trip"]
+    preco = resultado["price"]
+    companhia = resultado["airline"]
+    orcamento = trip.budget
+
+    mensagem = (
+        f"✈️ *Melhor Voo Encontrado!*\n\n"
+        f"📍 {trip.origin} ➔ {trip.destination}\n"
+        f"🏢 Companhia: {companhia}\n"
+        f"💰 Preço atual: R$ {preco:.2f}\n"
+        f"🎯 Seu orçamento: R$ {orcamento:.2f}\n"
+        "──────────────\n"
+    )
+
+    if preco <= orcamento:
+        mensagem += "✅ *OBA! O preço está dentro do seu orçamento!*"
+    else:
+        diferenca = preco - orcamento
+        mensagem += f"⚠️ *Alerta:* R$ {diferenca:.2f} ACIMA do orçamento."
+
+    await update.message.reply_text(mensagem, parse_mode="Markdown")

@@ -61,3 +61,11 @@ class TripRepository:
             return False
         finally:
             session.close()
+
+    def get_trip_by_id(self, trip_id: int) -> Trip | None:
+        """Busca uma única viagem pelo ID."""
+        session = SessionLocal()
+        try:
+            return session.get(Trip, trip_id)
+        finally:
+            session.close()
